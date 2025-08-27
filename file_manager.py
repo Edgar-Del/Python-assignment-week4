@@ -45,26 +45,26 @@ class FileManager:
             return False, f"'{filename}' is not a file (it might be a directory)."
         
         if not os.access(filename, os.R_OK):
-            return False, f"❌ File '{filename}' exists but cannot be read (permission denied)."
+            return False, f"File '{filename}' exists but cannot be read (permission denied)."
         
         # Check file size
         try:
             file_size = os.path.getsize(filename)
             if file_size == 0:
-                return False, f"❌ File '{filename}' is empty."
+                return False, f"File '{filename}' is empty."
             if file_size > 10 * 1024 * 1024:  # 10MB limit
-                return False, f"❌ File '{filename}' is too large ({file_size / (1024*1024):.1f}MB)."
+                return False, f"File '{filename}' is too large ({file_size / (1024*1024):.1f}MB)."
         except OSError:
-            return False, f"❌ Cannot access file '{filename}' properties."
+            return False, f"Cannot access file '{filename}' properties."
         
-        return True, f"✅ File '{filename}' is valid and ready to read."
+        return True, f"File '{filename}' is valid and ready to read."
     
     def read_file_content(self, filename: str) -> tuple[bool, str, Optional[str]]:
         """Read file content with error handling."""
         try:
             with open(filename, 'r', encoding='utf-8') as file:
                 content = file.read()
-                return True, f"✅ Successfully read '{filename}' ({len(content)} characters)", content
+                return True, f"Successfully read '{filename}' ({len(content)} characters)", content
                 
         except UnicodeDecodeError:
             # Try with different encodings
@@ -73,18 +73,18 @@ class FileManager:
                 try:
                     with open(filename, 'r', encoding=encoding) as file:
                         content = file.read()
-                        return True, f"✅ Successfully read '{filename}' with {encoding} encoding ({len(content)} characters)", content
+                        return True, f"Successfully read '{filename}' with {encoding} encoding ({len(content)} characters)", content
                 except UnicodeDecodeError:
                     continue
             
-            return False, f"❌ Cannot read '{filename}' - unsupported file encoding.", None
+            return False, f"Cannot read '{filename}' - unsupported file encoding.", None
             
         except PermissionError:
-            return False, f"❌ Permission denied when reading '{filename}'.", None
+            return False, f"Permission denied when reading '{filename}'.", None
         except OSError as e:
-            return False, f"❌ OS error when reading '{filename}': {e}", None
+            return False, f"OS error when reading '{filename}': {e}", None
         except Exception as e:
-            return False, f"❌ Unexpected error when reading '{filename}': {e}", None
+            return False, f"Unexpected error when reading '{filename}': {e}", None
     
     def modify_content(self, content: str, filename: str) -> str:
         """Modify the file content with various transformations."""
@@ -106,7 +106,7 @@ class FileManager:
         words = content.split()
         chars = len(content)
         
-        stats = f"\n📊 File Statistics:\n"
+        stats = f"\nFile Statistics:\n"
         stats += f"   Lines: {len(lines)}\n"
         stats += f"   Words: {len(words)}\n"
         stats += f"   Characters: {chars}\n"
@@ -132,20 +132,20 @@ class FileManager:
             with open(output_filename, 'w', encoding='utf-8') as file:
                 file.write(modified_content)
             
-            return True, f"✅ Successfully wrote modified content to '{output_filename}'"
+            return True, f"Successfully wrote modified content to '{output_filename}'"
             
         except PermissionError:
-            return False, f"❌ Permission denied when writing to '{output_filename}'"
+            return False, f"Permission denied when writing to '{output_filename}'"
         except OSError as e:
-            return False, f"❌ OS error when writing to '{output_filename}': {e}"
+            return False, f"OS error when writing to '{output_filename}': {e}"
         except Exception as e:
-            return False, f"❌ Unexpected error when writing to '{output_filename}': {e}"
+            return False, f"Unexpected error when writing to '{output_filename}': {e}"
     
     def display_file_preview(self, content: str, max_lines: int = 10) -> None:
         """Display a preview of the file content."""
         lines = content.split('\n')
         
-        print(f"\n📖 File Preview (showing first {min(max_lines, len(lines))} lines):")
+        print(f"\nFile Preview (showing first {min(max_lines, len(lines))} lines):")
         print("-" * 50)
         
         for i, line in enumerate(lines[:max_lines]):
@@ -160,7 +160,7 @@ class FileManager:
     
     def run(self):
         """Main program loop."""
-        print("🚀 File Manager - Read, Modify & Write Challenge")
+        print("File Manager - Read, Modify & Write Challenge")
         print("=" * 50)
         print("This program will:")
         print("• Read a file you specify")
@@ -192,9 +192,9 @@ class FileManager:
                 self.display_file_preview(content)
                 
                 # Ask user if they want to proceed
-                proceed = input("\n🤔 Do you want to create a modified version? (y/n): ").strip().lower()
+                proceed = input("\nDo you want to create a modified version? (y/n): ").strip().lower()
                 if proceed not in ['y', 'yes', '']:
-                    print("⏭️  Skipping modification.")
+                    print("⏭Skipping modification.")
                     continue
                 
                 # Modify content
@@ -205,27 +205,26 @@ class FileManager:
                 print(write_message)
                 
                 if write_success:
-                    print(f"🎉 Success! Your modified file has been created.")
+                    print(f"Success! Your modified file has been created.")
                     
                     # Ask if user wants to see the modified file
-                    show_modified = input("\n�� Would you like to see the modified file? (y/n): ").strip().lower()
+                    show_modified = input("\nWould you like to see the modified file? (y/n): ").strip().lower()
                     if show_modified in ['y', 'yes']:
                         self.display_file_preview(modified_content, 15)
                 
                 # Ask if user wants to process another file
-                another = input("\n🔄 Process another file? (y/n): ").strip().lower()
+                another = input("\nProcess another file? (y/n): ").strip().lower()
                 if another not in ['y', 'yes', '']:
-                    print("👋 Thanks for using File Manager!")
+                    print("Thanks for using File Manager!")
                     break
                     
             except KeyboardInterrupt:
-                print("\n\n👋 Goodbye!")
+                print("\n\nGoodbye!")
                 break
             except Exception as e:
-                print(f"\n❌ An unexpected error occurred: {e}")
-                print("🔄 Let's try again...")
+                print(f"\nAn unexpected error occurred: {e}")
+                print("Let's try again...")
                 continue
-
 
 def main():
     """Main entry point."""
@@ -233,11 +232,10 @@ def main():
         file_manager = FileManager()
         file_manager.run()
     except KeyboardInterrupt:
-        print("\n\n👋 Goodbye!")
+        print("\n\nGoodbye!")
     except Exception as e:
-        print(f"\n💥 Fatal error: {e}")
+        print(f"\nFatal error: {e}")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()
